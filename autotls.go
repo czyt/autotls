@@ -5,9 +5,10 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"golang.org/x/crypto/acme/autocert"
 	"log"
+	"time"
 )
 
-func newTlsConfig(domains ...string) *tls.Config {
+func newTlsConfig(domains []string, opts ...Option) *tls.Config {
 	m := &autocert.Manager{
 		Prompt: autocert.AcceptTOS,
 	}
@@ -19,14 +20,27 @@ func newTlsConfig(domains ...string) *tls.Config {
 	} else {
 		m.Cache = dir
 	}
+
+	opt := &options{}
+	for _, o := range opts {
+		o.apply(opt)
+	}
+	if opt.email != "" {
+		m.Email = opt.email
+	}
+	// only apply this when bigger or eq 1 min
+	if opt.renewBefore >= time.Minute {
+		m.RenewBefore = opt.renewBefore
+	}
+
 	return m.TLSConfig()
 }
 
-func WithAutoTlS(domains ...string) []http.ServerOption {
-	opts := make([]http.ServerOption, 0, 2)
-	opts = append(opts,
-		http.TLSConfig(newTlsConfig(domains...)),
+func WithAutoTlS(domains []string, opts ...Option) []http.ServerOption {
+	serverOpts := make([]http.ServerOption, 0, 2)
+	serverOpts = append(serverOpts,
+		http.TLSConfig(newTlsConfig(domains, opts...)),
 		http.Address(":https"),
 	)
-	return opts
+	return serverOpts
 }
