@@ -1,4 +1,4 @@
-module github.com/czyt/autotls
+module github.com/tiny-lib/autotls
 
 go 1.19
 
