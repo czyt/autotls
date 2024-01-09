@@ -3,6 +3,7 @@ module github.com/tiny-lib/autotls
 go 1.19
 
 require (
+
 	github.com/go-kratos/kratos/v2 v2.7.2
 	golang.org/x/crypto v0.17.0
 )
