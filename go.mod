@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/go-kratos/kratos/v2 v2.7.2
-	golang.org/x/crypto v0.21.0
+	golang.org/x/crypto v0.22.0
 )
 
 require (
